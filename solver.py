@@ -2,6 +2,20 @@ import sys
 
 # For testing sake, this is an input for a 9x9 (hard) puzzle: 111111111122222222223333333333444444444455555555556666666666777777777788888888889
 
+# TODO
+"""
+Methods to add:
+    convert_board: Convert int with 81/9 digits to a readable board for parsing
+        Likely using vectors
+    valid_spot: Check if a block allows for a certain number
+        Params may be number to input, readable board to change
+    solve: Recursive function to add a possible digit to a block, and recursively solve the puzzle after that
+        If return is false from next recursive call, try the next valid number for this square
+        If true, return true if this number is valid (I think this is a given but might have to add a check)
+        Base case: Puzzle is solved (no 0’s)
+    (Maybe) Minimum value heuristic to check which blocks has the least number of options
+        Return next block to check
+"""
 
 # Call if no file with puzzle specified
 def user_input():
@@ -59,6 +73,23 @@ def print_board(size, puzzle):
                 print(" ------------- ------------ ------------")
             y += 1
 
+def convert_board(size, puzzle):
+    # Convert to either vector<vector<int>> or an array of arrays of ints
+    # Different based on if size == 9 or 81
+
+# row and column will be None if size == 9
+def valid_spot(size, puzzle, row, column, number):
+    # If a 3x3, just check if the current number exists in the puzzle
+    # If a 9x9, must check current 3x3, the column, and row if the number we are trying exists in any of the 3
+    # Return true if valid spot for this number, false if not
+
+# Recursive backtracking algorithm
+def solve(size, puzzle):
+    # Where the backtracking takes place
+
+# MRV heuristic - not required for our implementation but can be good to add
+# def mrv():
+    # Return the next block to solve
 
 if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
