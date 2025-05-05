@@ -74,6 +74,8 @@ def print_board(size, puzzle):
             y += 1
 
 def convert_board(size, puzzle):
+
+    return 0
     # Convert to either vector<vector<int>> or an array of arrays of ints
     # Different based on if size == 9 or 81
 
@@ -82,10 +84,12 @@ def valid_spot(size, puzzle, row, column, number):
     # If a 3x3, just check if the current number exists in the puzzle
     # If a 9x9, must check current 3x3, the column, and row if the number we are trying exists in any of the 3
     # Return true if valid spot for this number, false if not
+    return 0
 
 # Recursive backtracking algorithm
 def solve(size, puzzle):
     # Where the backtracking takes place
+    return 0
 
 # MRV heuristic - not required for our implementation but can be good to add
 # def mrv():
@@ -95,13 +99,17 @@ if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
     if len(sys.argv) == 2:
         print("Loading in file:", sys.argv[1])
+        file = open(sys.argv[1], "r")
+        line = file.readline()
+        print_board(81, line)
     elif len(sys.argv) > 2:
         print("More than one file detected, only one file allowed at a time.")
     else:
         print("No files passed in, running manual input mode.")
+        puzzle, size = user_input() 
+        print_board(size, puzzle)
     
     # puzzle is a list of digits that is size long
-    puzzle, size = user_input() 
-    print_board(size, puzzle)
+    
 
     # Will likely want to print the unsolved board and the solved board after backtracking is run
