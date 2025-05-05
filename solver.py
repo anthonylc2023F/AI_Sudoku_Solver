@@ -1,6 +1,6 @@
 import sys
 
-# For testing sake, this is an input for a 9x9 (hard) puzzle: 111111111122222222223333333333444444444455555555556666666666777777777788888888889
+# For testing sake, this is an input for a 9x9 (hard) puzzle: 500467309903810427174203000231976854857124090496308172000089260782641005010000708
 
 # TODO
 """
@@ -108,13 +108,17 @@ def print_board_to_file(size, puzzle, out):
                 y += 1
             out.write("==========================================\n")
 
-def convert_board(size, puzzle):
+def convert_board_to_grid(size, puzzle):
     if size == 9:
         return [[int(puzzle[i * 3 + j]) for j in range(3)] for i in range(3)]
     else:
         return [[int(puzzle[i * 9 + j]) for j in range(9)] for i in range(9)]
     # Convert to either vector<vector<int>> or an array of arrays of ints
     # Different based on if size == 9 or 81
+
+def convert_grid_to_board(puzzle):
+    return ''.join(str(cell) for row in puzzle for cell in row)
+        
 
 # row and column will be None if size == 9
 def valid_spot(size, puzzle, row, column, number):
@@ -155,9 +159,33 @@ def valid_spot(size, puzzle, row, column, number):
     # Return true if valid spot for this number, false if not
 
 # Recursive backtracking algorithm
-def solve(size, puzzle):
-    # Where the backtracking takes place
-    return 0
+def solve_hard(puzzle, row, col):
+    # If we reached the last spot successfully, return True
+    if row == 8 and col == 9:
+        return True
+   
+    # If we reached the end of a row, move to the next
+    elif col == 9:
+        row += 1
+        col = 0
+
+
+    # If this spot is already filled move to the next
+    if puzzle[row][col] != 0:
+        return solve_hard(puzzle, row, col + 1)
+   
+    # Try putting numbers from 1-9 here until we find one that works with the puzzle
+    for i in range(1, 10):
+        if valid_spot(81, puzzle, row, col, i):
+            puzzle[row][col] = i
+            if solve_hard(puzzle, row, col + 1):
+                return True
+            puzzle[row][col] = 0
+    return False
+
+
+def solve(puzzle):
+    solve_hard(puzzle, 0, 0)
 
 # MRV heuristic - not required for our implementation but can be good to add
 # def mrv():
@@ -173,7 +201,7 @@ if __name__ == "__main__":
                 size = len(line.strip())
                 output.write("Before:\n")
                 print_board_to_file(size, line, output)
-                puzzle_grid = convert_board(size, line)
+                puzzle_grid = convert_board_to_grid(size, line)
             input.close()
             
     elif len(sys.argv) > 3 or len(sys.argv) == 2:
@@ -182,7 +210,10 @@ if __name__ == "__main__":
         print("No files passed in, running manual input mode.")
         puzzle, size = user_input() 
         print_board(size, puzzle)
-        puzzle_grid = convert_board(size, puzzle)
+        puzzle_grid = convert_board_to_grid(size, puzzle)
+        solve(puzzle_grid)
+        puzzle = convert_grid_to_board(puzzle_grid)
+        print_board(size, puzzle)
     
     # puzzle is a list of digits that is size long
 
