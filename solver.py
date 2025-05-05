@@ -74,8 +74,10 @@ def print_board(size, puzzle):
             y += 1
 
 def convert_board(size, puzzle):
-
-    return 0
+    if size == 9:
+        return [[int(puzzle[i * 3 + j]) for j in range(3)] for i in range(3)]
+    else:
+        return [[int(puzzle[i * 9 + j]) for j in range(9)] for i in range(9)]
     # Convert to either vector<vector<int>> or an array of arrays of ints
     # Different based on if size == 9 or 81
 
@@ -108,6 +110,7 @@ if __name__ == "__main__":
         print("No files passed in, running manual input mode.")
         puzzle, size = user_input() 
         print_board(size, puzzle)
+        puzzle_grid = convert_board(size, puzzle)
     
     # puzzle is a list of digits that is size long
     
