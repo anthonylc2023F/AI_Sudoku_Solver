@@ -73,22 +73,23 @@ def print_board(size, puzzle):
                 print(" ------------- ------------ ------------")
             y += 1
 
+# Prints a board with size boxes to an output file
 def print_board_to_file(size, puzzle, out):
-    with open(out, 'w') as file:
-        
         puzzle_string = str(puzzle) # Convert to string so we can split later
         if (size == 9): # 3x3
-            file.write("-------------\n")
+            out.write("-------------\n")
             for i in range(9, 0, -3): # Print input in rows of 3
                 nums_to_print = puzzle_string[:3] # Slice off first 3 nums
                 puzzle_string = puzzle_string[3:] # Remove first 3 nums from original puzzle
                 string = "|"
                 for num in nums_to_print:
                     string += f" {num} |"
-                file.write(string + "\n")
-                file.write("-------------\n")
+                out.write(string + "\n")
+                out.write("-------------\n")
+            out.write("==========================================\n")
+
         else: # 9x9 - a lot longer than that ^ print bc I wanted to distinguish between each of the 3x3's within the 9x9
-            file.write(" ------------- ------------ ------------\n")
+            out.write(" ------------- ------------ ------------\n")
             y = 1 # Used in separating 3x3's
             for i in range(81, 0, -9): # Print input in rows of 9
                 nums_to_print = puzzle_string[:9] # Slice off first 9 nums
@@ -100,11 +101,12 @@ def print_board_to_file(size, puzzle, out):
                     if x % 3 == 0: # Used in separating 3x3's
                         string += "|"
                     x += 1
-                file.write(string + "\n")
-                file.write(" ------------- ------------ ------------\n")
+                out.write(string + "\n")
+                out.write(" ------------- ------------ ------------\n")
                 if y % 3 == 0 and i != 9: # Used in separating 3x3's
-                    file.write(" ------------- ------------ ------------\n")
+                    out.write(" ------------- ------------ ------------\n")
                 y += 1
+            out.write("==========================================\n")
 
 def convert_board(size, puzzle):
     if size == 9:
@@ -164,13 +166,15 @@ def solve(size, puzzle):
 if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
     if len(sys.argv) == 3:
-        print("Loading in file:", sys.argv[1])
-        file = open(sys.argv[1], "r")
-        for line in file:
-            size = len(line.strip())
-            print_board_to_file(size, line, sys.argv[2])
-            puzzle_grid = convert_board(size, line)
-        file.close()
+        print("Loading in files:", sys.argv[1], sys.argv[2])
+        input = open(sys.argv[1], "r")
+        with open(sys.argv[2], 'w') as output:
+            for line in input:
+                size = len(line.strip())
+                output.write("Before:\n")
+                print_board_to_file(size, line, output)
+                puzzle_grid = convert_board(size, line)
+            input.close()
             
     elif len(sys.argv) > 3 or len(sys.argv) == 2:
         print("Invalid usage. Either python solver.py with no arguments for manual mode or python solver.py input output for file mode.")
