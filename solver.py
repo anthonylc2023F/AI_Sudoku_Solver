@@ -73,6 +73,39 @@ def print_board(size, puzzle):
                 print(" ------------- ------------ ------------")
             y += 1
 
+def print_board_to_file(size, puzzle, out):
+    with open(out, 'w') as file:
+        
+        puzzle_string = str(puzzle) # Convert to string so we can split later
+        if (size == 9): # 3x3
+            file.write("-------------\n")
+            for i in range(9, 0, -3): # Print input in rows of 3
+                nums_to_print = puzzle_string[:3] # Slice off first 3 nums
+                puzzle_string = puzzle_string[3:] # Remove first 3 nums from original puzzle
+                string = "|"
+                for num in nums_to_print:
+                    string += f" {num} |"
+                file.write(string + "\n")
+                file.write("-------------\n")
+        else: # 9x9 - a lot longer than that ^ print bc I wanted to distinguish between each of the 3x3's within the 9x9
+            file.write(" ------------- ------------ ------------\n")
+            y = 1 # Used in separating 3x3's
+            for i in range(81, 0, -9): # Print input in rows of 9
+                nums_to_print = puzzle_string[:9] # Slice off first 9 nums
+                puzzle_string = puzzle_string[9:] # Remove first 9 nums from original puzzle
+                string = "||"
+                x = 1 # Used in separating 3x3's
+                for num in nums_to_print:
+                    string += f" {num} |"
+                    if x % 3 == 0: # Used in separating 3x3's
+                        string += "|"
+                    x += 1
+                file.write(string + "\n")
+                file.write(" ------------- ------------ ------------\n")
+                if y % 3 == 0 and i != 9: # Used in separating 3x3's
+                    file.write(" ------------- ------------ ------------\n")
+                y += 1
+
 def convert_board(size, puzzle):
     if size == 9:
         return [[int(puzzle[i * 3 + j]) for j in range(3)] for i in range(3)]
@@ -85,32 +118,39 @@ def convert_board(size, puzzle):
 def valid_spot(size, puzzle, row, column, number):
 
     if (size == 9):
-        print("size of the board is 9")
+        # Check mini 3x3
+        for x in range(3):
+            for y in range(3):
+                if puzzle[x][y] == number:
+                    return False
+        return True
     else:
-        print("size of the board is 81")
 
         # Check column (y axis)
         for y in range(9):
-            print(y)
+            if puzzle[y][column] == number:
+                return False
 
         # Check row (x axis)
         for x in range(9):
-            print(x)
-
+            if puzzle[row][x] == number:
+                return False
+            
         # Check current 3x3
-
         # check what "block" we are working with
         blockRow = row - (row % 3)
         blockColumn = column - (column % 3)
 
         for x in range(3):
             for y in range(3):
-                print(x, y)
+                if puzzle[x + blockRow][y + blockColumn] == number:
+                    return False
+                
+        return True
 
     # If a 3x3, just check if the current number exists in the puzzle
     # If a 9x9, must check current 3x3, the column, and row if the number we are trying exists in any of the 3
     # Return true if valid spot for this number, false if not
-    return 0
 
 # Recursive backtracking algorithm
 def solve(size, puzzle):
@@ -123,13 +163,17 @@ def solve(size, puzzle):
 
 if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         print("Loading in file:", sys.argv[1])
         file = open(sys.argv[1], "r")
-        line = file.readline()
-        print_board(81, line)
-    elif len(sys.argv) > 2:
-        print("More than one file detected, only one file allowed at a time.")
+        for line in file:
+            size = len(line.strip())
+            print_board_to_file(size, line, sys.argv[2])
+            puzzle_grid = convert_board(size, line)
+        file.close()
+            
+    elif len(sys.argv) > 3 or len(sys.argv) == 2:
+        print("Invalid usage. Either python solver.py with no arguments for manual mode or python solver.py input output for file mode.")
     else:
         print("No files passed in, running manual input mode.")
         puzzle, size = user_input() 
@@ -137,6 +181,5 @@ if __name__ == "__main__":
         puzzle_grid = convert_board(size, puzzle)
     
     # puzzle is a list of digits that is size long
-    valid_spot(81, None, 5, 5, 5)
 
     # Will likely want to print the unsolved board and the solved board after backtracking is run
