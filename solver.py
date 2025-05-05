@@ -81,6 +81,30 @@ def convert_board(size, puzzle):
 
 # row and column will be None if size == 9
 def valid_spot(size, puzzle, row, column, number):
+
+    if (size == 9):
+        print("size of the board is 9")
+    else:
+        print("size of the board is 81")
+
+        # Check column (y axis)
+        for y in range(9):
+            print(y)
+
+        # Check row (x axis)
+        for x in range(9):
+            print(x)
+
+        # Check current 3x3
+
+        # check what "block" we are working with
+        blockRow = row - (row % 3)
+        blockColumn = column - (column % 3)
+
+        for x in range(3):
+            for y in range(3):
+                print(x, y)
+
     # If a 3x3, just check if the current number exists in the puzzle
     # If a 9x9, must check current 3x3, the column, and row if the number we are trying exists in any of the 3
     # Return true if valid spot for this number, false if not
@@ -110,6 +134,6 @@ if __name__ == "__main__":
         print_board(size, puzzle)
     
     # puzzle is a list of digits that is size long
-    
+    valid_spot(81, None, 5, 5, 5)
 
     # Will likely want to print the unsolved board and the solved board after backtracking is run
