@@ -202,6 +202,11 @@ if __name__ == "__main__":
                 output.write("Before:\n")
                 print_board_to_file(size, line, output)
                 puzzle_grid = convert_board_to_grid(size, line)
+                solve(puzzle_grid)
+                puzzle_grid = convert_grid_to_board(puzzle_grid)
+                output.write("After:\n")
+                print_board_to_file(size, puzzle_grid, output)
+                output.write("==========================================\n")
             input.close()
             
     elif len(sys.argv) > 3 or len(sys.argv) == 2:
