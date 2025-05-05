@@ -1,4 +1,4 @@
-
+import sys
 
 # For testing sake, this is an input for a 9x9 (hard) puzzle: 111111111122222222223333333333444444444455555555556666666666777777777788888888889
 
@@ -62,6 +62,12 @@ def print_board(size, puzzle):
 
 if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
+    if len(sys.argv) == 2:
+        print("Loading in file:", sys.argv[1])
+    elif len(sys.argv) > 2:
+        print("More than one file detected, only one file allowed at a time.")
+    else:
+        print("No files passed in, running manual input mode.")
     
     # puzzle is a list of digits that is size long
     puzzle, size = user_input() 
