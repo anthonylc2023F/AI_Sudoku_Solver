@@ -1,4 +1,5 @@
 import sys
+import time
 
 # For testing sake, this is an input for a 9x9 (hard) puzzle: 500467309903810427174203000231976854857124090496308172000089260782641005010000708
 
@@ -185,32 +186,78 @@ def solve_hard(puzzle, row, col):
 
 
 def solve(puzzle):
-    solve_hard(puzzle, 0, 0)
+    #solve_hard(puzzle, 0, 0)
+    mrv(puzzle)
+
+
+# MRV heuristic helper method
+def find_best_cell(puzzle):
+    minimum_options = 10 # Max options is 9, so make it 1 higher
+    best_cell = None # no best cell to start off with
+
+    # loop through rows/columns
+    for row in range(9):
+        for column in range(9):
+            if puzzle[row][column] == 0:
+                options = 0 # start with 0 options
+                
+                for number in range(1, 10): # run through all the numbers
+                    if valid_spot(81, puzzle, row, column, number):
+                        options += 1 # another valid option
+                if options < minimum_options: # less options than minimum options
+                    minimum_options = options
+                    best_cell = (row, column)
+                    if minimum_options == 1: # Cant do better than this
+                        return best_cell
+    return best_cell
+
+
+
 
 # MRV heuristic - not required for our implementation but can be good to add
-# def mrv():
-    # Return the next block to solve
+def mrv(puzzle):
+    best_cell = find_best_cell(puzzle)
+    if not best_cell: # if no cell found, return True as puzzle must be solved
+        return True
+    
+    row = best_cell[0]
+    column = best_cell[1]
+
+    for number in range(1, 10): # Loop through every number
+        if valid_spot(81, puzzle, row, column, number): # check if valid spot
+            puzzle[row][column] = number
+            if mrv(puzzle):
+                return True
+            puzzle[row][column] = 0 # Backtracking
+    return False
+
 
 if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
     if len(sys.argv) == 3:
         print("Loading in files:", sys.argv[1], sys.argv[2])
         input = open(sys.argv[1], "r")
+        startTime = time.time()
         with open(sys.argv[2], 'w') as output:
             for line in input:
+                line = line.strip()
                 size = len(line.strip())
                 output.write("Before:\n")
                 print_board_to_file(size, line, output)
                 puzzle_grid = convert_board_to_grid(size, line)
                 solve(puzzle_grid)
                 puzzle_grid = convert_grid_to_board(puzzle_grid)
-                output.write("After:\n")
+                output.write(f"After:\n")
                 print_board_to_file(size, puzzle_grid, output)
                 output.write("==========================================\n")
+            endTime = time.time()
+            output.write(f"After: (Elapsed time: {endTime - startTime})\n")
             input.close()
             
     elif len(sys.argv) > 3 or len(sys.argv) == 2:
-        print("Invalid usage. Either python solver.py with no arguments for manual mode or python solver.py input output for file mode.")
+        print("Invalid usage. You have two options:")
+        print("python solver.py - for manual input of sudoku puzzle")
+        print("python solver.py <input file> <output file> - to use an input file")
     else:
         print("No files passed in, running manual input mode.")
         puzzle, size = user_input() 
