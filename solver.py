@@ -185,9 +185,14 @@ def solve_hard(puzzle, row, col):
     return False
 
 
-def solve(puzzle):
-    #solve_hard(puzzle, 0, 0)
-    mrv(puzzle)
+def solve(puzzle, option):
+    if option == "n":
+        solve_hard(puzzle, 0, 0)
+    elif option == "o":
+        mrv(puzzle)
+    else:
+        print("Invalid option")
+        sys.exit()
 
 
 # MRV heuristic helper method
@@ -234,7 +239,9 @@ def mrv(puzzle):
 
 if __name__ == "__main__":
     # Check for input of a txt file first. If none, call user_input
+    option = None
     if len(sys.argv) == 3:
+        option = input("Which mode would you like? (n for normal or o for optimized?): ")
         print("Loading in files:", sys.argv[1], sys.argv[2])
         input = open(sys.argv[1], "r")
         startTime = time.time()
@@ -245,7 +252,7 @@ if __name__ == "__main__":
                 output.write("Before:\n")
                 print_board_to_file(size, line, output)
                 puzzle_grid = convert_board_to_grid(size, line)
-                solve(puzzle_grid)
+                solve(puzzle_grid, option)
                 puzzle_grid = convert_grid_to_board(puzzle_grid)
                 output.write(f"After:\n")
                 print_board_to_file(size, puzzle_grid, output)
@@ -260,10 +267,11 @@ if __name__ == "__main__":
         print("python solver.py <input file> <output file> - to use an input file")
     else:
         print("No files passed in, running manual input mode.")
+        option = input("Which mode would you like? (n for normal or o for optimized?): ")
         puzzle, size = user_input() 
         print_board(size, puzzle)
         puzzle_grid = convert_board_to_grid(size, puzzle)
-        solve(puzzle_grid)
+        solve(puzzle_grid, option)
         puzzle = convert_grid_to_board(puzzle_grid)
         print_board(size, puzzle)
     
