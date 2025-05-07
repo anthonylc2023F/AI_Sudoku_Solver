@@ -219,7 +219,7 @@ def find_best_cell(puzzle):
 
 
 
-# MRV heuristic - not required for our implementation but can be good to add
+# MRV heuristic - to tackle harder puzzles
 def mrv(puzzle):
     best_cell = find_best_cell(puzzle)
     if not best_cell: # if no cell found, return True as puzzle must be solved
